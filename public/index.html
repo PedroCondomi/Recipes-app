@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Recetas App</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <script src="js/api.js" defer></script>
+    <script src="js/sidebar.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <button id="toggleSidebar">☰</button>
+      <div class="logo">🍴 RecetasApp</div>
+
+      <div id="user-info" class="user-info">
+        <!-- Aquí va login o info usuario -->
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#" data-section="favorites">⭐ Favoritos</a></li>
+          <li><a href="#" data-section="custom">📝 Custom Recipes</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main>
+      <!-- Topbar -->
+      <header class="topbar">
+        <input type="text" id="searchInput" placeholder="Buscar receta..." />
+        <button id="searchBtn">Buscar</button>
+        <button id="randomBtn">Receta aleatoria</button>
+      </header>
+
+      <!-- Secciones -->
+      <section id="search-section" class="section">
+        <h2>Resultados de búsqueda</h2>
+        <div id="searchResults"></div>
+      </section>
+
+      <section id="recipe-detail" class="section hidden">
+        <h2>Detalle de receta</h2>
+        <div id="recipeContent"></div>
+        <button id="backToSearch">Volver</button>
+      </section>
+
+      <section id="favorites-section" class="section hidden">
+        <h2>Favoritos</h2>
+        <div id="favoritesList"></div>
+      </section>
+
+      <section id="custom-section" class="section hidden">
+        <h2>Mis recetas personalizadas</h2>
+        <button id="newCustomBtn">Nueva receta</button>
+        <div id="customList"></div>
+      </section>
+    </main>
+  </body>
+</html>
