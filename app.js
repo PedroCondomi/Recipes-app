@@ -45,7 +45,8 @@ app.get(
     // Guardar token en cookie temporal para frontend
     res.cookie("tmpToken", req.user.token, {
       httpOnly: false, // frontend puede leer
-      sameSite: "Lax",
+      sameSite: "None",
+      secure: true,
       maxAge: 10 * 60 * 1000, // 10 minutos
     });
 

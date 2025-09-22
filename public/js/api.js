@@ -7,11 +7,11 @@ function getToken() {
 // Obtener token temporal de cookie y guardarlo en localStorage
 async function fetchToken() {
   try {
-    const res = await fetch(`${API_URL}/get-token`, { credentials: "include" });
+    const res = await fetch("/get-token", { credentials: "include" });
     const data = await res.json();
     if (data.token) {
       localStorage.setItem("token", data.token);
-      loadUserUI(); // actualizar UI
+      loadUserUI();
     }
   } catch (error) {
     console.error("Error fetching token:", error);
@@ -24,7 +24,7 @@ async function apiGet(path) {
   const res = await fetch(API_URL + path, {
     method: "GET",
     headers: { "x-token": getToken() || "" },
-    credentials: "include",
+    credentials: "include", // permite enviar cookies
   });
   if (!res.ok) throw new Error("Error GET " + path);
   return res.json();

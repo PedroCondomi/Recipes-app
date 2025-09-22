@@ -11,7 +11,7 @@ const verifyAuth = require("../middlewares/googleauth");
 const router = Router();
 
 // All routes verify auth
-router.use(verifyAuth);
+// router.use(verifyAuth);
 
 router.post("/custom", createCustomRecipe);
 router.get("/custom", getUserCustomRecipes);

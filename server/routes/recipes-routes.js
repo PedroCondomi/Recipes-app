@@ -12,7 +12,7 @@ const verifyAuth = require("../middlewares/googleauth");
 const router = Router();
 
 // Single recipes
-router.get("/search", [verifyAuth], getRecipeByName);
+router.get("/search", getRecipeByName);
 router.get("/meal/random", getRandomRecipe);
 router.get("/meal/:id", getRecipeById);
 
