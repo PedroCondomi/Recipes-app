@@ -13,10 +13,10 @@ const router = Router();
 // All routes verify auth
 // router.use(verifyAuth);
 
-router.post("/custom", createCustomRecipe);
-router.get("/custom", getUserCustomRecipes);
-router.get("/custom/:id", getCustomRecipeById);
-router.put("/custom/:id", updateCustomRecipe);
-router.delete("/custom/:id", deleteCustomRecipe);
+router.post("/custom", [verifyAuth], createCustomRecipe);
+router.get("/custom", [verifyAuth], getUserCustomRecipes);
+router.get("/custom/:id", [verifyAuth], getCustomRecipeById);
+router.put("/custom/:id", [verifyAuth], updateCustomRecipe);
+router.delete("/custom/:id", [verifyAuth], deleteCustomRecipe);
 
 module.exports = router;

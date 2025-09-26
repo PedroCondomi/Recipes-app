@@ -3,8 +3,9 @@ const passport = require("passport");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./server/config/dbconfig.js");
-const recipesRouter = require("./server/routes/recipes-routes.js");
-const customRecipesRouter = require("./server/routes/customrecipes-routes.js");
+const recipesRoutes = require("./server/routes/recipes-routes.js");
+const customRecipesRoutes = require("./server/routes/customrecipes-routes.js");
+const userRoutes = require("./server/routes/user-routes.js");
 require("dotenv").config();
 
 const app = express();
@@ -26,8 +27,9 @@ app.use(passport.initialize());
 app.use(express.static(path.join(__dirname, "public")));
 
 // API routes
-app.use("/", recipesRouter);
-app.use("/", customRecipesRouter);
+app.use("/", recipesRoutes);
+app.use("/", customRecipesRoutes);
+app.use("/users", userRoutes);
 
 // Google Auth
 app.get(

@@ -92,11 +92,23 @@ const addFavorite = async (req, res) => {
       });
     }
 
-    if (user.favorites.includes(recipeId)) {
+    const already = user.favorites.find(f => f.mealId === recipeId);
+    if (already) {
       return res.status(400).json({ error: "Recipe already in favorites" });
     }
 
-    user.favorites.push(recipeId);
+    const response = await axios.get(`${baseUrl}/lookup.php?i=${recipeId}`);
+    const meal = response.data.meals?.[0];
+    if (!meal) {
+      return res.status(404).json({ error: "Meal not found" });
+    }
+
+    user.favorites.push({
+      mealId: meal.idMeal,
+      name: meal.strMeal,
+      thumbnail: `${meal.strMealThumb}/preview`,
+    });
+
     await user.save();
 
     res.status(200).json({
@@ -114,6 +126,7 @@ const addFavorite = async (req, res) => {
 const deleteFavorite = async (req, res) => {
   const userId = req.user._id;
   const recipeId = req.params.id;
+
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -122,7 +135,7 @@ const deleteFavorite = async (req, res) => {
       });
     }
 
-    user.favorites = user.favorites.filter(id => id !== recipeId);
+    user.favorites = user.favorites.filter(f => f.mealId !== recipeId);
     await user.save();
 
     res.status(200).json({

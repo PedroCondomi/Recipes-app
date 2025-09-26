@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const favoriteSchema = new mongoose.Schema({
+  mealId: { type: String, required: true },
+  name: String,
+  thumbnail: String,
+});
+
 const userSchema = new mongoose.Schema({
   googleId: {
     type: String,
@@ -8,7 +14,7 @@ const userSchema = new mongoose.Schema({
   displayName: String,
   email: String,
   image: String,
-  favorites: [String], // meal IDs from TheMealDB
+  favorites: [favoriteSchema], // meal IDs from TheMealDB
   groceryList: [String], // Ingredients or custom list
 });
 
