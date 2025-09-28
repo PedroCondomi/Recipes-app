@@ -9,6 +9,7 @@
     <script src="js/api.js" defer></script>
     <script src="js/sidebar.js" defer></script>
     <script src="js/search.js" defer></script>
+    <script src="js/custom.js" defer></script>
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
       <button id="toggleSidebar">☰</button>
@@ -44,7 +45,6 @@
       <section id="recipe-detail" class="section hidden">
         <h2>Recipe details</h2>
         <div id="recipeContent"></div>
-        <button id="backToSearch">Back</button>
       </section>
 
       <section id="favorites-section" class="section hidden">
@@ -57,6 +57,26 @@
         <button id="newCustomBtn">New recipe</button>
         <div id="customList"></div>
       </section>
+
+      <div id="customModal" class="modal hidden">
+        <h3 id="customModalTitle"></h3>
+        <input id="customTitle" placeholder="Título" />
+        <textarea
+          id="customInstructions"
+          placeholder="Instrucciones"
+        ></textarea>
+        <div id="ingredients-container">
+          <h4>Ingredientes (opcional)</h4>
+          <div class="ingredient-inputs">
+            <input type="text" id="ingredientName" placeholder="Ingrediente" />
+            <input type="text" id="ingredientAmount" placeholder="Cantidad" />
+            <button type="button" id="addIngredientBtn">➕ Agregar</button>
+          </div>
+          <ul id="ingredientsList"></ul>
+        </div>
+        <button id="saveCustom">Guardar</button>
+        <button id="cancelCustom">Cancelar</button>
+      </div>
     </main>
   </body>
 </html>

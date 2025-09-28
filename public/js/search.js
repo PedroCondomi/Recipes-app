@@ -5,7 +5,6 @@ const randomBtn = document.getElementById("randomBtn");
 const searchResults = document.getElementById("searchResults");
 const recipeDetail = document.getElementById("recipe-detail");
 const recipeContent = document.getElementById("recipeContent");
-const backToSearch = document.getElementById("backToSearch");
 const favoritesLink = document.querySelector('[data-section="favorites"]');
 const favoritesSection = document.getElementById("favorites-section");
 const favoritesList = document.getElementById("favoritesList");
@@ -167,9 +166,3 @@ async function toggleFavorite(id, btn) {
     alert("Error al agregar a favoritos: " + error.message);
   }
 }
-
-// Volver a resultados
-backToSearch.addEventListener("click", () => {
-  recipeDetail.classList.add("hidden");
-  document.getElementById("search-section").classList.remove("hidden");
-});

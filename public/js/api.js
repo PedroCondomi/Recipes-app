@@ -24,7 +24,7 @@ async function apiGet(path) {
   const res = await fetch(API_URL + path, {
     method: "GET",
     headers: { "x-token": getToken() || "" },
-    credentials: "include", // permite enviar cookies
+    credentials: "include",
   });
   if (!res.ok) throw new Error("Error GET " + path);
   return res.json();
@@ -41,5 +41,31 @@ async function apiPost(path, data = {}) {
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error("Error POST " + path);
+  return res.json();
+}
+
+async function apiPut(path, data = {}) {
+  const res = await fetch(API_URL + path, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-token": getToken() || "",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Error PUT " + path);
+  return res.json();
+}
+
+async function apiDelete(path) {
+  const res = await fetch(API_URL + path, {
+    method: "DELETE",
+    headers: {
+      "x-token": getToken() || "",
+    },
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Error DELETE " + path);
   return res.json();
 }
