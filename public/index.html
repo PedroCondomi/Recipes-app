@@ -31,7 +31,7 @@
     <main>
       <!-- Topbar -->
       <header class="topbar">
-        <input type="text" id="searchInput" placeholder="Buscar receta..." />
+        <input type="text" id="searchInput" placeholder="Search recipe..." />
         <button id="searchBtn">Search</button>
         <button id="randomBtn">Random recipe</button>
       </header>
@@ -59,23 +59,25 @@
       </section>
 
       <div id="customModal" class="modal hidden">
-        <h3 id="customModalTitle"></h3>
-        <input id="customTitle" placeholder="Título" />
-        <textarea
-          id="customInstructions"
-          placeholder="Instrucciones"
-        ></textarea>
-        <div id="ingredients-container">
-          <h4>Ingredientes (opcional)</h4>
-          <div class="ingredient-inputs">
-            <input type="text" id="ingredientName" placeholder="Ingrediente" />
-            <input type="text" id="ingredientAmount" placeholder="Cantidad" />
-            <button type="button" id="addIngredientBtn">➕ Agregar</button>
+        <div class="modal-content">
+          <h3 id="customModalTitle"></h3>
+          <input id="customTitle" placeholder="Title" />
+          <textarea
+            id="customInstructions"
+            placeholder="Instructions"
+          ></textarea>
+          <div id="ingredients-container">
+            <h4>Ingredients (optional)</h4>
+            <div class="ingredient-inputs">
+              <input type="text" id="ingredientName" placeholder="Ingredient" />
+              <input type="text" id="ingredientAmount" placeholder="Amount" />
+              <button type="button" id="addIngredientBtn">➕ Add</button>
+            </div>
+            <ul id="ingredientsList"></ul>
           </div>
-          <ul id="ingredientsList"></ul>
+          <button id="saveCustom">Save</button>
+          <button id="cancelCustom">Cancel</button>
         </div>
-        <button id="saveCustom">Guardar</button>
-        <button id="cancelCustom">Cancelar</button>
       </div>
     </main>
   </body>

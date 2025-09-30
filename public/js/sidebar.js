@@ -12,6 +12,7 @@ function login() {
 function logout() {
   localStorage.removeItem("token");
   loadUserUI();
+  window.location.reload();
 }
 
 async function loadUserUI() {
@@ -19,7 +20,7 @@ async function loadUserUI() {
   const userInfo = document.getElementById("user-info");
 
   if (!token) {
-    userInfo.innerHTML = `<button onclick="login()">Login con Google</button>`;
+    userInfo.innerHTML = `<button onclick="login()">Login with Google</button>`;
     return;
   }
 
@@ -28,21 +29,21 @@ async function loadUserUI() {
       headers: { "x-token": token },
     });
 
-    if (!res.ok) throw new Error("No autorizado");
+    if (!res.ok) throw new Error("Unauthorized");
     const user = await res.json();
 
     userInfo.innerHTML = `
       <div class="profile">
-        <img src="${user.image}" alt="Foto de ${user.displayName}" />
+        <img src="${user.image}" alt="Pic of ${user.displayName}" />
         <p>${user.displayName}</p>
         <button onclick="logout()">Logout</button>
       </div>
     `;
     await loadFavoritesIds();
   } catch (error) {
-    console.error("Error obteniendo usuario:", error);
+    console.error("Error fetching user:", error);
     localStorage.removeItem("token");
-    userInfo.innerHTML = `<button onclick="login()">Login con Google</button>`;
+    userInfo.innerHTML = `<button onclick="login()">Login with Google</button>`;
   }
 }
 

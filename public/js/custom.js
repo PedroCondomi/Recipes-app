@@ -21,7 +21,7 @@ let ingredients = [];
 customLink.addEventListener("click", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("Debes iniciar sesión para ver tus recetas.");
+    alert("Must be logged in to see own recipes.");
     return;
   }
 
@@ -39,7 +39,7 @@ async function loadCustomRecipes() {
     const recipes = data["custom recipes"];
 
     if (!recipes.length) {
-      customList.innerHTML = "<p>No tienes recetas personalizadas aún.</p>";
+      customList.innerHTML = "<p>You don't have any custom recipes.</p>";
       return;
     }
 
@@ -48,15 +48,15 @@ async function loadCustomRecipes() {
         r => `
       <div class="card">
         <h3>${r.title}</h3>
-        <button onclick="showCustomDetail('${r._id}')">Ver detalle</button>
-        <button onclick="deleteCustomRecipe('${r._id}')">Eliminar</button>
+        <button onclick="showCustomDetail('${r._id}')">See details</button>
+        <button onclick="deleteCustomRecipe('${r._id}')">Delete</button>
       </div>
     `
       )
       .join("");
   } catch (error) {
     console.error(error);
-    customList.innerHTML = "<p>Error cargando recetas.</p>";
+    customList.innerHTML = "<p>Error loading recipes.</p>";
   }
 }
 
@@ -67,8 +67,8 @@ cancelCustom.addEventListener("click", () => closeCustomModal());
 function openCustomModal(recipe = null) {
   editingRecipeId = recipe ? recipe._id : null;
   document.getElementById("customModalTitle").textContent = recipe
-    ? "Editar Receta"
-    : "Nueva Receta";
+    ? "Edit recipe"
+    : "New recipe";
 
   // Pre-cargar datos si es edición
   customTitle.value = recipe?.title || "";
@@ -118,7 +118,7 @@ function addIngredientToList(name, amount) {
 addIngredientBtn.addEventListener("click", () => {
   const name = ingredientName.value.trim();
   const amount = ingredientAmount.value.trim();
-  if (!name || !amount) return alert("Completa nombre y cantidad.");
+  if (!name || !amount) return alert("Write name and quantity.");
   addIngredientToList(name, amount);
   ingredientName.value = "";
   ingredientAmount.value = "";
@@ -134,7 +134,7 @@ saveCustom.addEventListener("click", async () => {
   }));
 
   if (!title || !instructions)
-    return alert("Título e instrucciones son obligatorios");
+    return alert("Must write a name and instructions.");
 
   try {
     if (editingRecipeId) {
@@ -150,7 +150,7 @@ saveCustom.addEventListener("click", async () => {
     loadCustomRecipes();
   } catch (err) {
     console.error(err);
-    alert("Error al guardar la receta");
+    alert("Error saving the recipe");
   }
 });
 
@@ -159,21 +159,32 @@ async function showCustomDetail(id) {
   try {
     const recipe = await apiGet(`/custom/${id}`);
     const ingredientsDisplay = recipe.ingredients.length
-      ? `<p>Ingredientes:</p>
-         <ul>${recipe.ingredients
-           .map(i => `<li>${i.amount} - ${i.name}</li>`)
-           .join("")}</ul>`
-      : "<p><em>Sin ingredientes</em></p>";
+      ? `<ul>${recipe.ingredients
+          .map(i => `<li>${i.amount} - ${i.name}</li>`)
+          .join("")}</ul>`
+      : "<p><em>No ingredients</em></p>";
 
     recipeContent.innerHTML = `
-      <h2>${recipe.title}</h2>
-      <p>${recipe.instructions}</p>
+    <div class="detail-card">
+          <h1>${recipe.title}</h1>
+             
+      <div class="ingredients">
+      <h3>Ingredients</h3>
       ${ingredientsDisplay}
-      <button onclick="openCustomModal(${JSON.stringify(recipe).replace(
-        /"/g,
-        "&quot;"
-      )})">Editar</button>
-      <button onclick="backToCustom()">Volver</button>
+      </div>
+      </br>
+      <div class="detail-body">
+        <h3>Instructions</h3>
+        <p>${recipe.instructions}</p>
+      </div>
+      <div class="detail-footer">
+          <button onclick="openCustomModal(${JSON.stringify(recipe).replace(
+            /"/g,
+            "&quot;"
+          )})">Edit</button>
+      <button onclick="backToCustom()">Go back</button>
+        </div>      
+    </div>
     `;
 
     document
@@ -192,12 +203,12 @@ function backToCustom() {
 
 // ====== ELIMINAR ======
 async function deleteCustomRecipe(id) {
-  if (!confirm("¿Eliminar esta receta?")) return;
+  if (!confirm("Delete this recipe?")) return;
   try {
     await apiDelete(`/custom/${id}`);
     loadCustomRecipes();
   } catch (err) {
     console.error(err);
-    alert("No se pudo eliminar");
+    alert("Couldn't delete recipe.");
   }
 }

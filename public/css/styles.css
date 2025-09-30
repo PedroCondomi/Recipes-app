@@ -2,20 +2,24 @@ body {
   margin: 0;
   font-family: sans-serif;
   display: flex;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
 }
 
 .sidebar {
   width: 220px;
-  background: #333;
-  color: white;
-  padding: 1rem;
-  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #2c2c2c, #1e1e1e);
+  color: #f0f0f0;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
   transition: transform 0.3s ease;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar.closed {
-  transform: translateX(-170px);
+  transform: translateX(-220px);
 }
 
 #toggleSidebar {
@@ -34,28 +38,104 @@ body {
 }
 
 .sidebar .logo {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #f39c12; /* toque de color */
 }
 
 .sidebar nav ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar nav li {
-  margin: 0.5rem 0;
+  margin: 1rem 0;
 }
 
 .sidebar nav a {
-  color: white;
+  display: block;
+  padding: 0.6rem 1rem;
+  color: #f0f0f0;
   text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar nav a:hover {
+  background: #444;
+  color: #f39c12;
+}
+
+.user-info {
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ccc;
+  border-bottom: 1px solid #444;
+  padding-bottom: 1rem;
+}
+
+.user-info button {
+  display: inline-block;
+  width: 70%;
+  padding: 0.6rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.user-info button[onclick="login()"] {
+  background: #fff;
+  color: #444;
+  border: 1px solid #ccc;
+  background-image: url("https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 20px;
+  padding-left: 40px; /* espacio para el ícono */
+}
+
+.user-info button[onclick="logout()"] {
+  background: #e74c3c;
+  color: white;
+}
+
+.user-info button[onclick="logout()"]:hover {
+  background: #c0392b;
+}
+
+.profile {
+  text-align: center;
+}
+
+.profile img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+  border: 2px solid #555;
 }
 
 main {
   flex: 1;
   display: flex;
+  margin-left: 50px;
   flex-direction: column;
+}
+
+.sidebar.closed ~ main .topbar {
+  margin-left: -220px; /* Move the search bar closer when sidebar is closed */
+  transition: margin-left 0.3s ease;
+}
+.sidebar ~ main .topbar {
+  transition: margin-left 0.3s ease;
 }
 
 .topbar {
@@ -63,12 +143,337 @@ main {
   gap: 0.5rem;
   padding: 0.5rem;
   border-bottom: 1px solid #ccc;
+  background: #f9f9f9; /* 🔹 Fondo claro */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.topbar input {
+  width: 70%;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.topbar button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #3498db;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar.closed ~ main .section {
+  margin-left: -220px; /* Move the search bar closer when sidebar is closed */
+  transition: margin-left 0.3s ease;
+}
+.sidebar ~ main .section {
+  transition: margin-left 0.3s ease;
 }
 
 .section {
+  margin-left: 0px;
   padding: 1rem;
 }
 
 .hidden {
   display: none;
+}
+
+/* === Modal === */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 95%;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.modal-content button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.modal-content button#saveCustom {
+  background: #27ae60;
+  color: #fff;
+}
+
+.modal-content button#saveCustom:hover {
+  background: #1e8449;
+}
+
+.modal-content button#cancelCustom {
+  background: #e74c3c;
+  color: #fff;
+  margin-left: 0.5rem;
+}
+
+.modal-content button#cancelCustom:hover {
+  background: #c0392b;
+}
+
+/* === Cards de recetas === */
+#searchResults,
+#favoritesList,
+#customList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.card button {
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+}
+
+.card button:hover {
+  background-color: #2980b9;
+}
+
+.card h3 {
+  margin: 0;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+/* === Detalle de receta === */
+.detail-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.detail-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+
+.detail-header img {
+  max-width: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.detail-info {
+  height: 300px;
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detail-info h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info .cat {
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detail-info p {
+  margin: 0.2rem 0;
+}
+
+.fav-icon {
+  margin-left: -10px;
+  width: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.fav-icon:hover {
+  transform: scale(1.1);
+}
+
+.detail-body h3 {
+  margin-top: 0;
+}
+
+.detail-body p {
+  line-height: 1.5;
+}
+
+.detail-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.detail-footer button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: #3498db;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.detail-footer button:hover {
+  background: #2980b9;
+}
+
+/* === Ingredientes === */
+.ingredients {
+  margin-top: 1rem;
+  background: #fff9f0;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ingredients h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #e67e22; /* naranja suave para título */
+}
+
+.ingredients ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.ingredients li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Iconito tipo “dot” o check antes del ingrediente */
+.ingredients li::before {
+  content: "•"; /* podés cambiar a "✔" si querés check */
+  position: absolute;
+  left: 0;
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Lista de ingredientes dentro del modal */
+#ingredientsList {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+}
+
+#ingredientsList li {
+  background: #f3f3f3;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#ingredientsList li button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#newCustomBtn {
+  padding: 0.6rem 1rem;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+#newCustomBtn:hover {
+  background: #2980b9;
 }

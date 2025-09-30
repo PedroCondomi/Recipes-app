@@ -20,29 +20,28 @@ favoritesLink.addEventListener("click", e => {
 async function loadFavorites() {
   const token = localStorage.getItem("token");
   if (!token) {
-    favoritesList.innerHTML = `<p>Debes iniciar sesión para ver favoritos.</p>`;
+    alert("Must be logged in to see favorites");
     return;
   }
   try {
     const data = await apiGet("/favorites");
     renderFavorites(data.favorites || []);
   } catch (error) {
-    favoritesList.innerHTML = `<p>Error al cargar favoritos: ${error.message}</p>`;
+    favoritesList.innerHTML = `<p>Error loading favorites: ${error.message}</p>`;
   }
 }
 
 function renderFavorites(favorites) {
   if (!favorites.length) {
-    favoritesList.innerHTML = "<p>No tienes favoritos guardados.</p>";
+    favoritesList.innerHTML = "<p>No favorites saved yet.</p>";
     return;
   }
 
   favoritesList.innerHTML = favorites
     .map(
       fav => `
-        <div class="card">
-          <img src="${fav.thumbnail}" alt="${fav.name}" 
-               onclick="loadRecipeDetail('${fav.mealId}')"/>
+        <div class="card" onclick="loadRecipeDetail('${fav.mealId}')">
+          <img src="${fav.thumbnail}" alt="${fav.name}"/>
           <h3>${fav.name}</h3>
         </div>
       `
@@ -77,7 +76,7 @@ searchBtn.addEventListener("click", async () => {
     const data = await apiGet(`/search?query=${query}`);
     renderSearchResults(data.meals || []);
   } catch (error) {
-    searchResults.innerHTML = `<p>Error al buscar: ${error.message}</p>`;
+    searchResults.innerHTML = `<p>Search error: ${error.message}</p>`;
   }
 });
 
@@ -87,24 +86,25 @@ randomBtn.addEventListener("click", async () => {
     const data = await apiGet("/meal/random");
     renderSearchResults(data.meal || []);
   } catch (error) {
-    searchResults.innerHTML = `<p>Error al obtener receta aleatoria: ${error.message}</p>`;
+    searchResults.innerHTML = `<p>Random search error: ${error.message}</p>`;
   }
+  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
+  searchSection.classList.remove("hidden");
 });
 
 // Renderizar resultados
 function renderSearchResults(meals) {
   if (!meals.length) {
-    searchResults.innerHTML = "<p>No se encontraron recetas.</p>";
+    searchResults.innerHTML = "<h2>No recipes found.</h2>";
     return;
   }
 
   searchResults.innerHTML = meals
     .map(
       meal => `
-    <div class="card">
-      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
+    <div class="card" onclick="loadRecipeDetail('${meal.idMeal}')">
+      <img src="${meal.strMealThumb}/preview" alt="${meal.strMeal}"/>
       <h3>${meal.strMeal}</h3>
-      <button onclick="loadRecipeDetail('${meal.idMeal}')">Ver detalle</button>
     </div>
   `
     )
@@ -116,28 +116,78 @@ async function loadRecipeDetail(id) {
   try {
     const data = await apiGet(`/meal/${id}`);
     const meal = data.meal;
-    // console.log(meal);
+    const ingredientsList = getIngredientsList(meal)
+      .map(i => `<li>${i}</li>`)
+      .join("");
 
     const isFav = favoriteIds.has(meal.idMeal);
-    const btnText = isFav ? "❌ Delete from favorites" : "⭐ Add to favorites";
+    const bookmark = isFav
+      ? "../assets/bookmark-on.png"
+      : "../assets/bookmark-off.png";
+
+    const instructionsParagraphs = meal.strInstructions
+      .split("\n")
+      .map(line => `<p>${line}</p>`)
+      .join("");
 
     document
       .querySelectorAll(".section")
       .forEach(s => s.classList.add("hidden"));
     recipeDetail.classList.remove("hidden");
 
+    const recipeTags = meal.strTags ? meal.strTags : "No tags available";
+
     recipeContent.innerHTML = `
-      <h3>${meal.strMeal}</h3>
-      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
-      <button onclick="toggleFavorite('${meal.idMeal}', this)">${btnText}</button>
-      <p><strong>Categoría:</strong> ${meal.strCategory}</p>
-      <p><strong>Área:</strong> ${meal.strArea}</p>
-      <h4>Instrucciones</h4>
-      <p>${meal.strInstructions}</p>
+      <div class="detail-card">
+        <div class="detail-header">
+          <img src="${meal.strMealThumb}/medium" alt="${meal.strMeal}">
+          <div class="detail-info">
+            <h1>${meal.strMeal}</h1>
+            <div class="cat">
+              <p><strong>Category:</strong> ${meal.strCategory}</p>
+              <p><strong>Area:</strong> ${meal.strArea}</p>
+              <p><strong>Tags:</strong> ${recipeTags}</p>            
+            </div>
+            <img
+              src="${bookmark}"
+              class="fav-icon"
+              onclick="toggleFavorite('${meal.idMeal}', this)"
+              alt="Favorite icon"
+            />
+          </div>
+        </div>
+        <div class="ingredients">
+          <h3>Ingredients</h3>
+          <ul>${ingredientsList}</ul>
+        </div>
+        </br>
+        <div class="detail-body">
+          <h3>Instructions</h3>
+          <p>${instructionsParagraphs}</p>
+        </div>
+        <div class="detail-footer">
+          <button onclick="backToSearch()">Go back</button>
+        </div>
+      </div>
     `;
   } catch (error) {
-    recipeContent.innerHTML = `<p>Error cargando receta: ${error.message}</p>`;
+    recipeContent.innerHTML = `<p>Error loading recipe: ${error.message}</p>`;
   }
+}
+
+function getIngredientsList(meal) {
+  const ingredients = [];
+
+  for (let i = 1; i <= 20; i++) {
+    const ingredient = meal[`strIngredient${i}`];
+    const measure = meal[`strMeasure${i}`];
+
+    if (ingredient && ingredient.trim() !== "") {
+      ingredients.push(`${measure ? measure : ""} - ${ingredient}`);
+    }
+  }
+
+  return ingredients;
 }
 
 async function toggleFavorite(id, btn) {
@@ -155,14 +205,19 @@ async function toggleFavorite(id, btn) {
         headers: { "x-token": token },
       });
       favoriteIds.delete(id);
-      btn.textContent = "⭐ Agregar a favoritos";
+      btn.src = "../assets/bookmark-off.png";
     } else {
       // Agregar
       await apiPost(`/favorites/${id}`);
       favoriteIds.add(id);
-      btn.textContent = "❌ Quitar de favoritos";
+      btn.src = "../assets/bookmark-on.png";
     }
   } catch (error) {
-    alert("Error al agregar a favoritos: " + error.message);
+    alert("Error loading favorites: " + error.message);
   }
+}
+
+function backToSearch() {
+  recipeDetail.classList.add("hidden");
+  document.getElementById("search-section").classList.remove("hidden");
 }
