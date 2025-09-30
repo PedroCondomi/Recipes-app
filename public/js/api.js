@@ -1,4 +1,7 @@
-const API_URL = "http://localhost:8080";
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8080"
+    : "https://recipes-app-af73.onrender.com/";
 
 function getToken() {
   return localStorage.getItem("token");
