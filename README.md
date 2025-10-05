@@ -52,6 +52,6 @@ A modern web application for discovering, saving, and creating recipes using The
 # Technologies
 
 - **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Node, Express, MongoDB, Axios, JWT
-- **Authentication**: Passport (Google OAuth)
-- **API Integration**: TheMealDB API
+- **Backend**: Node, Express, MongoDB(https://www.mongodb.com/), Axios, JWT
+- **Authentication**: Passport(https://www.npmjs.com/package/passport) (Google OAuth)
+- **API Integration**: TheMealDB API(https://www.themealdb.com/api.php)
