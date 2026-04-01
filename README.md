@@ -71,7 +71,7 @@ Recipes App centralizes recipe discovery and personal management in a single int
 
 ---
 
-## 🚀 Getting Started
+## Installation
 
 1. Clone the repository:
 
