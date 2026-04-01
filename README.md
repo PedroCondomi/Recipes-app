@@ -41,7 +41,7 @@ Recipes App centralizes recipe discovery and personal management in a single int
 * MongoDB used for persistent user data and custom recipes
 * JWT-based authentication for session handling
 * Google OAuth integration via Passport for secure login
-* External API consumption (TheMealDB) handled asynchronously
+* External API consumption ([TheMealDB](https://www.themealdb.com/)) handled asynchronously
 
 ---
 
@@ -67,7 +67,7 @@ Recipes App centralizes recipe discovery and personal management in a single int
 
 **External API**
 
-* TheMealDB
+* ([TheMealDB](https://www.themealdb.com/))
 
 ---
 
