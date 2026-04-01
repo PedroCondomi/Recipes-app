@@ -2,7 +2,7 @@
 
 Lee esto en otros idiomas:
 
-* en English: [README.md](README.md)
+* 🇪n English: [README.md](README.md)
 
 Aplicación web full-stack para descubrir, guardar y crear recetas con una experiencia de usuario limpia e intuitiva.
 
